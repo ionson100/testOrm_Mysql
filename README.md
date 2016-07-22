@@ -92,13 +92,6 @@ creation projections
         public string Description { get; set; }
     }
 ```
-```csharp
-
-```
-```csharp
-
-```
-
 initialization orm
  ```csharp
    new Configure(
@@ -109,3 +102,77 @@ initialization orm
                 true//using cache2 level
                 );
   ```
+  get session;
+```csharp
+ISession ses = Configure.GetSessionCore();
+```
+work session;
+add rows;
+```csharp
+ ses.Querion<Telephone>().Delete(a=>a.Date!=null);
+
+   for (int i = 0; i < 10; i++)
+   {
+     Telephone t = new Telephone {Date = new DateTime(), Description = "simple", Name = "ss" + i};
+     ses.Save(t);
+   }
+```
+```csharp
+   var t27 = ses.Querion<Telephone>().OrderBy(w => w.Description).ThenBy(s => s.IdTelephone).LastOrDefault(s => s.Description != null);
+   var t28 = ses.Querion<Telephone>().OrderBy(a => a.Description == null && a.Description == "asad").LastOrDefault(a => a.Description != null);
+   var t29 = ses.Querion<Telephone>().OrderBy(a => a.Description == null && a.Description == "asad").FirstOrDefault(a => a.Description != null);
+   var t30 = ses.Querion<Telephone>().OrderByDescending(a => a.Description).ToList().FirstOrDefault(d => d.Description == null);
+   var t31 = ses.Querion<Telephone>().Last(dd => dd.Description == null);
+   var t32 = ses.Querion<Telephone>().OrderByDescending(a => a.Description).ToList().LastOrDefault(d => d.Description == null);
+   //var t33 = ses.Querion<Telephone>().Single(a => a.Description == "sadsadsa");
+   //var t34 = ses.Querion<Telephone>().SingleOrDefault(a => a.Description == "sadsadsa");
+   var t35 = ses.Querion<Telephone>().All(a => a.Description != null || a.Description == null);
+   var t36 = ses.Querion<Telephone>().All(a => a.Description == "dsaas");
+   var t37 = ses.Querion<Telephone>().All(a => a.Id < 60000000);
+
+   var t38 = ses.Querion<Telephone>().Any(a => a.Description != null || a.Description == null);
+   var t39 = ses.Querion<Telephone>().Any(a => a.Description == "dsaas");
+   var t40 = ses.Querion<Telephone>().Any(a => a.Id < 60000000);
+   var t41 = ses.Querion<Telephone>().Where(s => s.Id > 0).Count(d => d.Description == null);
+   var t42 = ses.Querion<Telephone>().Where(s => s.Description != null).Select(a => a.Description.Length).ToList();
+   var t43 = ses.Querion<Telephone>().Select(a => a.Description.Length + a.Id).ToList();
+   var t44 = ses.Querion<Telephone>().Select(a => a.Description.Length).ToList();
+   var t45 = ses.Querion<Telephone>().Where(s => s.Description != null).Select(a => new { dd = a.Description.Length + a.Id, f = a.IdBody }).ToList();
+   var t456 =
+       ses.Querion<Telephone>()
+          .Where(s => s.Description == "ttttttttt")
+          .Select(a => new { dd = a.Description.Length + a.Id, f = a.IdBody }).ToList(); 
+```
+  getting over cache,  not using cache 
+```csharp
+var telovercache = ses.Querion<Telephone>().OverCache().Where(a => a.Date != null);
+```  
+  call procedure 
+
+```csharp
+ var p2 = new ParameterStoredPr("p2", 2, ParameterDirection.Output);
+ var res = ses.ProcedureCallParam<Body>("MyProc;", p1, p2).ToList();
+```
+
+```csharp
+
+```
+
+```csharp
+
+```
+
+```
+```csharp
+
+```
+```csharp
+
+```
+```
+```csharp
+
+```
+```csharp
+
+```
