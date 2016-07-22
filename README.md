@@ -130,8 +130,6 @@ add rows;
    var t30 = ses.Querion<Telephone>().OrderByDescending(a => a.Description).ToList().FirstOrDefault(d => d.Description == null);
    var t31 = ses.Querion<Telephone>().Last(dd => dd.Description == null);
    var t32 = ses.Querion<Telephone>().OrderByDescending(a => a.Description).ToList().LastOrDefault(d => d.Description == null);
-   //var t33 = ses.Querion<Telephone>().Single(a => a.Description == "sadsadsa");
-   //var t34 = ses.Querion<Telephone>().SingleOrDefault(a => a.Description == "sadsadsa");
    var t35 = ses.Querion<Telephone>().All(a => a.Description != null || a.Description == null);
    var t36 = ses.Querion<Telephone>().All(a => a.Description == "dsaas");
    var t37 = ses.Querion<Telephone>().All(a => a.Id < 60000000);
