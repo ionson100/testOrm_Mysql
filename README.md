@@ -109,6 +109,7 @@ initialization orm
                 );
   ```
   get session;
+  !!when using a multi-thread,  create a session for each thread
 ```csharp
 ISession ses = Configure.GetSessionCore();
 ```
