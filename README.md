@@ -28,6 +28,12 @@ CREATE TABLE `table_1` (
   `name` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id_table_1`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29351384 DEFAULT CHARSET=utf8
+
+CREATE TABLE `testimage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `image` longblob,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ```
 creation projections
 ```csharp
@@ -150,29 +156,39 @@ var telovercache = ses.Querion<Telephone>().OverCache().Where(a => a.Date != nul
   call procedure 
 
 ```csharp
+ var p1 = new ParameterStoredPr("p1", "table_name", ParameterDirection.Input);
  var p2 = new ParameterStoredPr("p2", 2, ParameterDirection.Output);
  var res = ses.ProcedureCallParam<Body>("MyProc;", p1, p2).ToList();
 ```
-
+free sql
+not inherit
 ```csharp
-
+var t1 = ses.FreeSql<Body>("select * from body");
+var t1 = ses.FreeSql<int>("select id from body");
 ```
-
+inherit type
 ```csharp
-
+var t1 = ses.FreeSql<Object>("select * from telephones");
+var t2 = ses.FreeSql<String>("select name from telephones");
 ```
-
-```
+Working with image
 ```csharp
-
+TestImage e = new TestImage();
+e.image = Image.FromFile("D:/qq.jpg");
+ses.Save(e);
+List<TestImage> images = ses.GetList<TestImage>().ToList();
 ```
+write to logfile
 ```csharp
-
+ses.WriteLogFile("simple text");
 ```
-```
+close session, clear cache1 level
 ```csharp
-
+ ses.Dispose();
 ```
+using transaction, inner transaction, transaction scope
 ```csharp
-
+  var tr= ses.BeginTransaction();
+  tr.Commit();
+  tr.Rollback();
 ```
