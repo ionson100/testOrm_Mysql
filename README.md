@@ -44,7 +44,7 @@ creation projections
         public int Id { get; set; }
 
         [MapColumnName("`image`")]
-        public byte[] Image { get; set; }
+        public Image image { get; set; }
     }
     [MapTableName("body", "body.id > 0")]
     public class Body
