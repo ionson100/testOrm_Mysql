@@ -190,3 +190,8 @@ using transaction, inner transaction, transaction scope
   tr.Commit();
   tr.Rollback();
 ```
+
+clearing the cache of type Level1 and Level2
+```csharp
+ses.ClearCache<Telephone>();
+```
