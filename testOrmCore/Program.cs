@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -56,7 +57,13 @@ namespace testOrmCore
             //var rrr = Expression.AndAlso(myExpression.Body, myExpression2.Body);
             //var myExpression1 = System.Linq.Dynamic.DynamicExpression.ParseLambda<Body, bool>("Description = @0 || Description =@1 ", "13", "12");
             //ORM_1_21_.Utils.
-            new Configure("Server=localhost;Database=test;Uid=root;Pwd=;charset=utf8;Allow User Variables=True;", ProviderName.MySql, true, "D:/assa22.txt", true);
+            new Configure(
+                "Server=localhost;Database=test;Uid=root;Pwd=;charset=utf8;Allow User Variables=True;",
+                ProviderName.MySql,
+                true, // write log
+                "D:/assa22.txt",//log file path
+                true//using cache2 level
+                );
 
 
             ////Utils.CreateAllTables("e:\\3assa.txt");
@@ -64,6 +71,23 @@ namespace testOrmCore
             //var ll = list.Where(myExpression.Compile()).First().Description;
 
             ISession ses = Configure.GetSessionCore();
+
+         
+            ses.Querion<Telephone>().Delete(a=>a.Date!=null);
+
+            for (int i = 0; i < 10; i++)
+            {
+                Telephone t = new Telephone {Date = new DateTime(), Description = "simple", Name = "ss" + i};
+                ses.Save(t);
+            }
+            var telephones = ses.Querion<Telephone>().ToList();
+            var telovercache = ses.Querion<Telephone>().OverCache().Where(a => a.Date != null);
+
+
+            ses.ClearCache<Telephone>();
+
+
+
 
 
             for (var i = 0; i < 5; i++)
@@ -240,6 +264,7 @@ namespace testOrmCore
 
             for (int i = 0; i < 20; i++)
             {
+                ses.WriteLogFile("seiple text");
                 ses.Save(new Telephone() { Date = DateTime.Now });
             }
 
@@ -263,6 +288,13 @@ namespace testOrmCore
             var e1 = ses.Querion<Telephone>().OverCache().FirstOrDefault();
             var tr = ses.BeginTransaction();
 
+
+
+            TestImage e = new TestImage();
+            e.image = Image.FromFile("D:/qq.jpg");
+            ses.Save(e);
+            List<TestImage> images = ses.GetList<TestImage>().ToList();
+           
             try
             {
 
@@ -368,9 +400,11 @@ namespace testOrmCore
             // var t53 = ses.Querion<Telephone>().Single(a => a.Description.Length == 10000);
 
             var t55 = ses.FreeSql<Body>("select * from body");
-            var t56 = ses.FreeSql<object>("select * from telephones");
+            var t5533 = ses.FreeSql<int>("select id from body");
+            var t56fg = ses.FreeSql<Object>("select * from telephones");
+            var t56 = ses.FreeSql<String>("select name from telephones");
 
-
+        
             var sd = ses.GetList<Table1>();
             var dds = new Table1 { Id = new Random().Next(30000000) };
             ses.Save(dds);
@@ -481,7 +515,8 @@ namespace testOrmCore
             var kkaa = ses.Querion<Telephone>().Where(a => a.Description == "asas").ToList();
             var kk1a = ses.Querion<Telephone>().Where(a => a.Description == " asas").ToList();
             var kk2a = ses.Querion<Telephone>().ToList();
-
+            ses.WriteLogFile("simple text");
+            
             ses.Dispose();
         }
     }
@@ -491,10 +526,8 @@ namespace testOrmCore
         [MapPrimaryKey("`id`", Generator.Native)]
         public int Id { get; set; }
 
-
-
         [MapColumnName("`image`")]
-        public byte[] Image { get; set; }
+        public Image  image{ get; set; }
     }
     [MapTableName("body", "body.id > 0")]
     public class Body
@@ -507,12 +540,13 @@ namespace testOrmCore
         public string Description { get; set; }
     }
 
-    [MapTableJoin("Cross")]
+    [MapTableJoin("inner")]
     [MapTableName("telephones", "telephones.id_body > 0")]
-    public class Telephone : Body, IErrorDal<Telephone>, IValidateDal<Body>, ORM_1_21_.IActionDal<Body>
+    public class Telephone : Body, IErrorDal<Telephone>, IValidateDal<Body>,IActionDal<Body>
     {
         [MapPrimaryKey("id_telephones", Generator.Native)]
         public Int32 IdTelephone { get; set; }
+
         [MapForeignKey]
         [MapColumnName("id_body")]
         public Int32 IdBody { get; set; }
@@ -520,48 +554,19 @@ namespace testOrmCore
         [MapColumnNameAttribute("`name`")]
         public string Name { get; set; }
 
-
         [MapColumnNameAttribute("`date`")]
         public DateTime Date { get; set; }
         public void ErrorDal(Telephone currentObject, Exception exception)
         {
             throw new NotImplementedException();
         }
-
-        public void Validate(Body type)
-        {
-
-        }
-
-        public void BeforeInsert(Body item)
-        {
-
-        }
-
-        public void AfterInsert(Body item)
-        {
-
-        }
-
-        public void BeforeUpdate(Body item)
-        {
-
-        }
-
-        public void AfterUpdate(Body item)
-        {
-
-        }
-
-        public void BeforeDelete(Body item)
-        {
-
-        }
-
-        public void AfterDelete(Body item)
-        {
-
-        }
+        public void Validate(Body type) {}
+        public void BeforeInsert(Body item){}
+        public void AfterInsert(Body item){}
+        public void BeforeUpdate(Body item) {}
+        public void AfterUpdate(Body item){}
+        public void BeforeDelete(Body item){}
+        public void AfterDelete(Body item){}
     }
 
     [MapTableName("`table_1`")]
